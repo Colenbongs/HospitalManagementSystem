@@ -210,3 +210,276 @@ void AlgorithmManager::searchPatientByNameOlogN(string targetName) {
         cout << RED << "✗ Error in O(log n) algorithm: " << e.what() << RESET << endl;
     }
 }
+
+// ==================== O(n) Linear Time Algorithm ====================
+// Linear scan - examines each element exactly once
+void AlgorithmManager::findCriticalPatientsOn() {
+    cout << YELLOW << "\n=== O(n) Linear Time Algorithm ===" << RESET << endl;
+    cout << "Scanning all patients for critical urgency (level 10)" << endl;
+
+    try {
+        auto start = high_resolution_clock::now();
+
+        int criticalCount = 0;
+        cout << "\nCritical Patients (Urgency = 10):" << endl;
+        cout << "----------------------------------------" << endl;
+
+        // Linear scan through all patients - O(n)
+        for (const auto& patient : patients) {
+            if (patient.getUrgency() == 10) {
+                patient.display();
+                cout << " [CRITICAL]" << endl;
+                criticalCount++;
+            }
+        }
+
+        auto end = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(end - start);
+
+        if (criticalCount == 0) {
+            cout << "No critical patients found." << endl;
+        }
+
+        cout << "----------------------------------------" << endl;
+        cout << "Total patients scanned: " << patients.size() << endl;
+        cout << "Critical patients found: " << criticalCount << endl;
+        cout << "Time taken: " << duration.count() << " microseconds" << endl;
+        cout << "Complexity: O(n) - Linear time" << endl;
+
+    }
+    catch (const exception& e) {
+        cout << RED << "✗ Error in O(n) algorithm: " << e.what() << RESET << endl;
+    }
+}
+
+// ==================== O(n log n) Log-linear Time Algorithm ====================
+// Efficient sorting algorithm (Introsort - hybrid of quicksort, heapsort, insertion sort)
+void AlgorithmManager::sortPatientsByUrgencyOnlogn() {
+    cout << YELLOW << "\n=== O(n log n) Log-linear Time Algorithm ===" << RESET << endl;
+    cout << "Sorting patients by urgency (highest first)" << endl;
+
+    try {
+        auto start = high_resolution_clock::now();
+
+        // Create copy to sort
+        vector<Patient> sortedPatients = patients;
+        // std::sort uses Introsort: O(n log n) average and worst case
+        sort(sortedPatients.begin(), sortedPatients.end(), Patient::compareByUrgencyDesc);
+
+        auto end = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(end - start);
+
+        cout << "\nPatients Sorted by Urgency:" << endl;
+        cout << "----------------------------------------" << endl;
+
+        for (const auto& patient : sortedPatients) {
+            patient.display();
+            cout << endl;
+        }
+
+        cout << "----------------------------------------" << endl;
+        cout << "Time taken: " << duration.count() << " microseconds" << endl;
+        cout << "Complexity: O(n log n) - Log-linear time" << endl;
+
+    }
+    catch (const exception& e) {
+        cout << RED << "✗ Error in O(n log n) algorithm: " << e.what() << RESET << endl;
+    }
+}
+
+// ==================== O(n²) Quadratic Time Algorithm ====================
+// Nested loops - generates all pairs, number of operations = n(n-1)/2
+void AlgorithmManager::displayAllPatientPairsOn2() {
+    cout << YELLOW << "\n=== O(n²) Quadratic Time Algorithm ===" << RESET << endl;
+    cout << "Generating all possible patient pairs" << endl;
+
+    try {
+        auto start = high_resolution_clock::now();
+
+        int pairCount = 0;
+        cout << "\nAll Patient Pairs:" << endl;
+        cout << "----------------------------------------" << endl;
+
+        // Nested loops - O(n²) complexity
+        for (size_t i = 0; i < patients.size(); i++) {
+            for (size_t j = i + 1; j < patients.size(); j++) {
+                cout << pairCount + 1 << ". ";
+                patients[i].display();
+                cout << " <-> ";
+                patients[j].display();
+                cout << endl;
+                pairCount++;
+            }
+        }
+
+        auto end = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(end - start);
+
+        if (pairCount == 0) {
+            cout << "Not enough patients to form pairs." << endl;
+        }
+        else {
+            cout << "----------------------------------------" << endl;
+            cout << "Total pairs generated: " << pairCount << endl;
+        }
+
+        cout << "Time taken: " << duration.count() << " microseconds" << endl;
+        cout << "Complexity: O(n²) - Quadratic time" << endl;
+
+    }
+    catch (const exception& e) {
+        cout << RED << "✗ Error in O(n²) algorithm: " << e.what() << RESET << endl;
+    }
+}
+
+// ==================== O(2ⁿ) Exponential Time Algorithm ====================
+// Recursive subset sum - explores all possible subsets (2^n possibilities)
+bool AlgorithmManager::subsetSumExistsHelper(const vector<int>& ids, int target, int index) {
+    try {
+        // Base cases
+        if (target == 0) return true;      // Found valid subset
+        if (index >= ids.size() || target < 0) return false;  // No solution
+
+        // Recursive cases: include current element OR exclude it
+        // This creates binary tree with 2^n leaves
+        return subsetSumExistsHelper(ids, target - ids[index], index + 1) ||
+            subsetSumExistsHelper(ids, target, index + 1);
+    }
+    catch (const exception& e) {
+        cout << RED << "✗ Error in subset sum recursion: " << e.what() << RESET << endl;
+        return false;
+    }
+}
+
+void AlgorithmManager::checkSubsetSumO2n(int targetSum) {
+    cout << YELLOW << "\n=== O(2ⁿ) Exponential Time Algorithm ===" << RESET << endl;
+    cout << "Checking if any subset of patient IDs sums to " << targetSum << endl;
+
+    try {
+        // Extract IDs from patients
+        vector<int> ids;
+        for (const auto& patient : patients) {
+            ids.push_back(patient.getId());
+        }
+
+        cout << "Patient IDs: ";
+        for (int id : ids) {
+            cout << id << " ";
+        }
+        cout << endl;
+        cout << "Target sum: " << targetSum << endl;
+
+        auto start = high_resolution_clock::now();
+
+        // Exponential algorithm call
+        bool result = subsetSumExistsHelper(ids, targetSum, 0);
+
+        auto end = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(end - start);
+
+        cout << "\nResult: ";
+        if (result) {
+            cout << GREEN << "✓ A subset of patient IDs sums to " << targetSum << RESET << endl;
+        }
+        else {
+            cout << RED << "✗ No subset of patient IDs sums to " << targetSum << RESET << endl;
+        }
+
+        cout << "Total patients (n): " << ids.size() << endl;
+        cout << "Maximum subsets: 2^" << ids.size() << " = " << (1ULL << ids.size()) << " possibilities" << endl;
+        cout << "Time taken: " << duration.count() << " microseconds" << endl;
+        cout << "Complexity: O(2ⁿ) - Exponential time" << endl;
+        cout << "WARNING: This algorithm becomes infeasible for n > 30" << endl;
+
+    }
+    catch (const exception& e) {
+        cout << RED << "✗ Error in O(2ⁿ) algorithm: " << e.what() << RESET << endl;
+    }
+}
+
+// ==================== O(n!) Factorial Time Algorithm ====================
+// Recursive permutation generation - generates all n! possible arrangements
+void AlgorithmManager::generatePermutationsHelper(vector<Patient>& patients, int left, int right) {
+    try {
+        if (left == right) {
+            // Base case: complete permutation found
+            static int permutationCount = 0;
+            permutationCount++;
+            cout << permutationCount << ". ";
+            for (const auto& p : patients) {
+                cout << p.getName() << " ";
+            }
+            cout << endl;
+        }
+        else {
+            // Generate permutations by swapping each element
+            for (int i = left; i <= right; i++) {
+                swap(patients[left], patients[i]);           // Swap current
+                generatePermutationsHelper(patients, left + 1, right);  // Recurse
+                swap(patients[left], patients[i]);           // Backtrack
+            }
+        }
+    }
+    catch (const exception& e) {
+        cout << RED << "✗ Error in permutation generation: " << e.what() << RESET << endl;
+    }
+}
+
+void AlgorithmManager::listAllPermutationsOnFactorial() {
+    cout << YELLOW << "\n=== O(n!) Factorial Time Algorithm ===" << RESET << endl;
+    cout << "Generating all permutations of patient treatment order" << endl;
+
+    try {
+        // Limit to 5 patients to avoid overwhelming output
+        int maxPatients = min(5, (int)patients.size());
+
+        if (maxPatients < 2) {
+            cout << RED << "Need at least 2 patients to demonstrate permutations." << RESET << endl;
+            return;
+        }
+
+        // Take subset of patients
+        vector<Patient> subset(patients.begin(), patients.begin() + maxPatients);
+
+        cout << "\nGenerating permutations for " << maxPatients << " patients:" << endl;
+        cout << "Patients: ";
+        for (const auto& p : subset) {
+            cout << p.getName() << " ";
+        }
+
+        // Calculate factorial
+        long long factorial = 1;
+        for (int i = 2; i <= maxPatients; i++) {
+            factorial *= i;
+        }
+        cout << "\nTotal permutations: " << maxPatients << "! = " << factorial << endl;
+        cout << "----------------------------------------" << endl;
+
+        auto start = high_resolution_clock::now();
+
+        // Reset permutation counter
+        static int permutationCounter = 0;
+        permutationCounter = 0;
+
+        // Generate all permutations
+        generatePermutationsHelper(subset, 0, subset.size() - 1);
+
+        auto end = high_resolution_clock::now();
+        auto duration = duration_cast<milliseconds>(end - start);
+
+        cout << "----------------------------------------" << endl;
+        cout << "Total permutations: " << factorial << endl;
+        cout << "Time taken: " << duration.count() << " milliseconds" << endl;
+        cout << "Complexity: O(n!) - Factorial time" << endl;
+        cout << "WARNING: This algorithm becomes impossible for n > 10" << endl;
+
+    }
+    catch (const exception& e) {
+        cout << RED << "✗ Error in O(n!) algorithm: " << e.what() << RESET << endl;
+    }
+}
+
+// Get total number of patients
+int AlgorithmManager::getPatientCount() const {
+    return patients.size();
+}
