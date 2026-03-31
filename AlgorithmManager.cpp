@@ -5,7 +5,7 @@
 #include <cctype>
 
 using namespace std;
-using namespace chrono;
+using namespace std::chrono;
 
 // ANSI color codes for console output
 #define GREEN "\033[32m"   // Success messages
@@ -118,17 +118,14 @@ void AlgorithmManager::displayAllPatients() const {
 }
 
 // ==================== O(1) Constant Time Algorithm ====================
-// Direct access to patient record - time doesn't grow with input size
 void AlgorithmManager::accessPatientO1(int id) {
     cout << YELLOW << "\n=== O(1) Constant Time Algorithm ===" << RESET << endl;
     cout << "Accessing patient record directly by ID" << endl;
 
     try {
-        auto start = high_resolution_clock::now();  // Start timing
+        auto start = high_resolution_clock::now();
 
         bool found = false;
-        // Linear search but still O(1) if ID maps directly to index
-        // In real implementation, we would use direct indexing
         for (size_t i = 0; i < patients.size(); i++) {
             if (patients[i].getId() == id) {
                 cout << GREEN << "\n✓ Patient Found:" << RESET << endl;
@@ -139,7 +136,7 @@ void AlgorithmManager::accessPatientO1(int id) {
             }
         }
 
-        auto end = high_resolution_clock::now();  // End timing
+        auto end = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(end - start);
 
         if (!found) {
@@ -156,7 +153,6 @@ void AlgorithmManager::accessPatientO1(int id) {
 }
 
 // ==================== O(log n) Logarithmic Time Algorithm ====================
-// Binary search - divides search space in half each iteration
 void AlgorithmManager::searchPatientByNameOlogN(string targetName) {
     cout << YELLOW << "\n=== O(log n) Logarithmic Time Algorithm ===" << RESET << endl;
     cout << "Binary search for patient by name" << endl;
@@ -164,7 +160,6 @@ void AlgorithmManager::searchPatientByNameOlogN(string targetName) {
     try {
         auto start = high_resolution_clock::now();
 
-        // Create sorted copy for binary search
         vector<Patient> sortedPatients = patients;
         sort(sortedPatients.begin(), sortedPatients.end(), Patient::compareByName);
 
@@ -173,10 +168,9 @@ void AlgorithmManager::searchPatientByNameOlogN(string targetName) {
         int steps = 0;
         bool found = false;
 
-        // Binary search algorithm - O(log n) comparisons
         while (left <= right) {
             steps++;
-            int mid = left + (right - left) / 2;  // Avoid overflow
+            int mid = left + (right - left) / 2;
 
             if (sortedPatients[mid].getName() == targetName) {
                 cout << GREEN << "\n✓ Patient Found after " << steps << " comparisons:" << RESET << endl;
@@ -186,10 +180,10 @@ void AlgorithmManager::searchPatientByNameOlogN(string targetName) {
                 break;
             }
             else if (sortedPatients[mid].getName() < targetName) {
-                left = mid + 1;  // Search right half
+                left = mid + 1;
             }
             else {
-                right = mid - 1;  // Search left half
+                right = mid - 1;
             }
         }
 
@@ -212,7 +206,6 @@ void AlgorithmManager::searchPatientByNameOlogN(string targetName) {
 }
 
 // ==================== O(n) Linear Time Algorithm ====================
-// Linear scan - examines each element exactly once
 void AlgorithmManager::findCriticalPatientsOn() {
     cout << YELLOW << "\n=== O(n) Linear Time Algorithm ===" << RESET << endl;
     cout << "Scanning all patients for critical urgency (level 10)" << endl;
@@ -224,7 +217,6 @@ void AlgorithmManager::findCriticalPatientsOn() {
         cout << "\nCritical Patients (Urgency = 10):" << endl;
         cout << "----------------------------------------" << endl;
 
-        // Linear scan through all patients - O(n)
         for (const auto& patient : patients) {
             if (patient.getUrgency() == 10) {
                 patient.display();
@@ -253,7 +245,6 @@ void AlgorithmManager::findCriticalPatientsOn() {
 }
 
 // ==================== O(n log n) Log-linear Time Algorithm ====================
-// Efficient sorting algorithm (Introsort - hybrid of quicksort, heapsort, insertion sort)
 void AlgorithmManager::sortPatientsByUrgencyOnlogn() {
     cout << YELLOW << "\n=== O(n log n) Log-linear Time Algorithm ===" << RESET << endl;
     cout << "Sorting patients by urgency (highest first)" << endl;
@@ -261,9 +252,7 @@ void AlgorithmManager::sortPatientsByUrgencyOnlogn() {
     try {
         auto start = high_resolution_clock::now();
 
-        // Create copy to sort
         vector<Patient> sortedPatients = patients;
-        // std::sort uses Introsort: O(n log n) average and worst case
         sort(sortedPatients.begin(), sortedPatients.end(), Patient::compareByUrgencyDesc);
 
         auto end = high_resolution_clock::now();
@@ -288,7 +277,6 @@ void AlgorithmManager::sortPatientsByUrgencyOnlogn() {
 }
 
 // ==================== O(n²) Quadratic Time Algorithm ====================
-// Nested loops - generates all pairs, number of operations = n(n-1)/2
 void AlgorithmManager::displayAllPatientPairsOn2() {
     cout << YELLOW << "\n=== O(n²) Quadratic Time Algorithm ===" << RESET << endl;
     cout << "Generating all possible patient pairs" << endl;
@@ -300,7 +288,6 @@ void AlgorithmManager::displayAllPatientPairsOn2() {
         cout << "\nAll Patient Pairs:" << endl;
         cout << "----------------------------------------" << endl;
 
-        // Nested loops - O(n²) complexity
         for (size_t i = 0; i < patients.size(); i++) {
             for (size_t j = i + 1; j < patients.size(); j++) {
                 cout << pairCount + 1 << ". ";
@@ -333,17 +320,13 @@ void AlgorithmManager::displayAllPatientPairsOn2() {
 }
 
 // ==================== O(2ⁿ) Exponential Time Algorithm ====================
-// Recursive subset sum - explores all possible subsets (2^n possibilities)
 bool AlgorithmManager::subsetSumExistsHelper(const vector<int>& ids, int target, int index) {
     try {
-        // Base cases
-        if (target == 0) return true;      // Found valid subset
-        if (index >= ids.size() || target < 0) return false;  // No solution
+        if (target == 0) return true;
+        if (index >= ids.size() || target < 0) return false;
 
-        // Recursive cases: include current element OR exclude it
-        // This creates binary tree with 2^n leaves
         return subsetSumExistsHelper(ids, target - ids[index], index + 1) ||
-            subsetSumExistsHelper(ids, target, index + 1);
+               subsetSumExistsHelper(ids, target, index + 1);
     }
     catch (const exception& e) {
         cout << RED << "✗ Error in subset sum recursion: " << e.what() << RESET << endl;
@@ -356,7 +339,6 @@ void AlgorithmManager::checkSubsetSumO2n(int targetSum) {
     cout << "Checking if any subset of patient IDs sums to " << targetSum << endl;
 
     try {
-        // Extract IDs from patients
         vector<int> ids;
         for (const auto& patient : patients) {
             ids.push_back(patient.getId());
@@ -370,10 +352,7 @@ void AlgorithmManager::checkSubsetSumO2n(int targetSum) {
         cout << "Target sum: " << targetSum << endl;
 
         auto start = high_resolution_clock::now();
-
-        // Exponential algorithm call
         bool result = subsetSumExistsHelper(ids, targetSum, 0);
-
         auto end = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(end - start);
 
@@ -398,25 +377,22 @@ void AlgorithmManager::checkSubsetSumO2n(int targetSum) {
 }
 
 // ==================== O(n!) Factorial Time Algorithm ====================
-// Recursive permutation generation - generates all n! possible arrangements
-void AlgorithmManager::generatePermutationsHelper(vector<Patient>& patients, int left, int right) {
+void AlgorithmManager::generatePermutationsHelper(vector<Patient>& patientsList, int left, int right) {
     try {
         if (left == right) {
-            // Base case: complete permutation found
             static int permutationCount = 0;
             permutationCount++;
             cout << permutationCount << ". ";
-            for (const auto& p : patients) {
+            for (const auto& p : patientsList) {
                 cout << p.getName() << " ";
             }
             cout << endl;
         }
         else {
-            // Generate permutations by swapping each element
             for (int i = left; i <= right; i++) {
-                swap(patients[left], patients[i]);           // Swap current
-                generatePermutationsHelper(patients, left + 1, right);  // Recurse
-                swap(patients[left], patients[i]);           // Backtrack
+                swap(patientsList[left], patientsList[i]);
+                generatePermutationsHelper(patientsList, left + 1, right);
+                swap(patientsList[left], patientsList[i]);
             }
         }
     }
@@ -430,7 +406,6 @@ void AlgorithmManager::listAllPermutationsOnFactorial() {
     cout << "Generating all permutations of patient treatment order" << endl;
 
     try {
-        // Limit to 5 patients to avoid overwhelming output
         int maxPatients = min(5, (int)patients.size());
 
         if (maxPatients < 2) {
@@ -438,7 +413,6 @@ void AlgorithmManager::listAllPermutationsOnFactorial() {
             return;
         }
 
-        // Take subset of patients
         vector<Patient> subset(patients.begin(), patients.begin() + maxPatients);
 
         cout << "\nGenerating permutations for " << maxPatients << " patients:" << endl;
@@ -447,7 +421,6 @@ void AlgorithmManager::listAllPermutationsOnFactorial() {
             cout << p.getName() << " ";
         }
 
-        // Calculate factorial
         long long factorial = 1;
         for (int i = 2; i <= maxPatients; i++) {
             factorial *= i;
@@ -457,11 +430,9 @@ void AlgorithmManager::listAllPermutationsOnFactorial() {
 
         auto start = high_resolution_clock::now();
 
-        // Reset permutation counter
         static int permutationCounter = 0;
         permutationCounter = 0;
 
-        // Generate all permutations
         generatePermutationsHelper(subset, 0, subset.size() - 1);
 
         auto end = high_resolution_clock::now();
