@@ -37,27 +37,19 @@ void clearInputBuffer() {
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
-// Function to pause and wait for user input
-void waitForUser() {
-    cout << YELLOW << "\nPress Enter to continue..." << RESET;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
-}
-
 // Run all algorithm demonstrations in sequence
 void runAllDemonstrations(AlgorithmManager& manager) {
     cout << YELLOW << "\n========================================" << RESET << endl;
     cout << YELLOW << "RUNNING ALL ALGORITHM DEMONSTRATIONS" << RESET << endl;
     cout << YELLOW << "========================================" << RESET << endl;
 
-    // Execute all seven algorithms
-    manager.accessPatientO1(1003);                      // O(1) - Constant
-    manager.searchPatientByNameOlogN("Grace Hopper");   // O(log n) - Logarithmic
-    manager.findCriticalPatientsOn();                    // O(n) - Linear
-    manager.sortPatientsByUrgencyOnlogn();               // O(n log n) - Log-linear
-    manager.displayAllPatientPairsOn2();                 // O(n²) - Quadratic
-    manager.checkSubsetSumO2n(2005);                     // O(2ⁿ) - Exponential
-    manager.listAllPermutationsOnFactorial();            // O(n!) - Factorial
+    manager.accessPatientO1(1003);
+    manager.searchPatientByNameOlogN("Grace Hopper");
+    manager.findCriticalPatientsOn();
+    manager.sortPatientsByUrgencyOnlogn();
+    manager.displayAllPatientPairsOn2();
+    manager.checkSubsetSumO2n(2005);
+    manager.listAllPermutationsOnFactorial();
 
     cout << YELLOW << "\n========================================" << RESET << endl;
     cout << YELLOW << "ALL DEMONSTRATIONS COMPLETED" << RESET << endl;
@@ -65,15 +57,13 @@ void runAllDemonstrations(AlgorithmManager& manager) {
 }
 
 int main() {
-    // Display welcome message
     cout << YELLOW << "========================================" << RESET << endl;
     cout << YELLOW << "HOSPITAL PATIENT MANAGEMENT SYSTEM" << RESET << endl;
     cout << YELLOW << "Algorithm Complexity Analysis Project" << RESET << endl;
     cout << YELLOW << "========================================" << RESET << endl;
 
-    AlgorithmManager manager;  // Create manager instance
+    AlgorithmManager manager;
 
-    // Initialize system with sample data
     try {
         manager.addSamplePatients();
         cout << GREEN << "\nSystem initialized with " << manager.getPatientCount() << " patients." << RESET << endl;
@@ -84,30 +74,27 @@ int main() {
     }
 
     int choice;
-    bool running = true;  // Flag to control program execution
+    bool running = true;
 
-    while (running) {  // Keep running until user chooses to exit
-        displayMenu();  // Show menu
+    while (running) {
+        displayMenu();
 
         try {
-            cin >> choice;  // Get user choice
+            cin >> choice;
 
-            // Input validation
             if (cin.fail()) {
                 throw invalid_argument("Invalid input. Please enter a number.");
             }
 
-            // Process user choice
             switch (choice) {
-            case 1: {  // O(1) Constant Time
+            case 1: {
                 int id;
                 cout << "Enter patient ID to access: ";
                 cin >> id;
                 manager.accessPatientO1(id);
                 break;
             }
-
-            case 2: {  // O(log n) Logarithmic Time
+            case 2: {
                 string name;
                 cout << "Enter patient name to search: ";
                 cin.ignore();
@@ -115,73 +102,59 @@ int main() {
                 manager.searchPatientByNameOlogN(name);
                 break;
             }
-
-            case 3:  // O(n) Linear Time
+            case 3:
                 manager.findCriticalPatientsOn();
                 break;
-
-            case 4:  // O(n log n) Log-linear Time
+            case 4:
                 manager.sortPatientsByUrgencyOnlogn();
                 break;
-
-            case 5:  // O(n²) Quadratic Time
+            case 5:
                 manager.displayAllPatientPairsOn2();
                 break;
-
-            case 6: {  // O(2ⁿ) Exponential Time
+            case 6: {
                 int target;
                 cout << "Enter target sum to check: ";
                 cin >> target;
                 manager.checkSubsetSumO2n(target);
                 break;
             }
-
-            case 7:  // O(n!) Factorial Time
+            case 7:
                 manager.listAllPermutationsOnFactorial();
                 break;
-
-            case 8:  // Display all patients
+            case 8:
                 manager.displayAllPatients();
                 break;
-
-            case 9:  // Insert new patient
+            case 9:
                 manager.insertPatientManually();
                 break;
-
-            case 10:  // Run all demonstrations
+            case 10:
                 runAllDemonstrations(manager);
                 break;
-
-            case 0:  // Exit program
+            case 0:
                 cout << YELLOW << "\nThank you for using the Hospital Patient Management System!" << RESET << endl;
                 cout << YELLOW << "Exiting program..." << RESET << endl;
-                running = false;  // Set flag to exit loop
+                running = false;
                 break;
-
-            default:  // Invalid choice
+            default:
                 cout << RED << "Invalid choice. Please enter 0-10." << RESET << endl;
-                clearInputBuffer();  // Clear invalid input
+                clearInputBuffer();
             }
 
-            // If not exiting, wait for user to press Enter
             if (running && choice != 0) {
                 cout << YELLOW << "\nPress Enter to return to menu..." << RESET;
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 cin.get();
             }
-
         }
         catch (const invalid_argument& e) {
             cout << RED << "Error: " << e.what() << RESET << endl;
-            clearInputBuffer();  // Clear error flags and buffer
+            clearInputBuffer();
         }
         catch (const exception& e) {
             cout << RED << "Unexpected error: " << e.what() << RESET << endl;
             clearInputBuffer();
         }
-
-        // Clear screen for better visibility 
     }
 
     return 0;
-}﻿
+}
