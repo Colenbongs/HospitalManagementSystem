@@ -38,4 +38,4 @@ public:
     int getPatientCount() const;  // Get total patients count
 };
 
-#endif﻿
+#endif // ALGORITHM_MANAGER_H
