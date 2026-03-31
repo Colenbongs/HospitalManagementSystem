@@ -35,4 +35,4 @@ public:
     static bool compareByUrgencyDesc(const Patient& a, const Patient& b);
 };
 
-#endif
+#endif // PATIENT_H
